@@ -23,10 +23,11 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use(res => {
-  const { data, msg} = res
-  if (data.code === 200) {
-    return data.data
-  } else if (data.code === 40001) {
+  console.log(res,'resres');
+  const {code, data, msg} = res.data
+  if (code === 200) {
+    return data
+  } else if (code === 50001) {
     ElMessage.error(TOKEN_INVAID)
     setTimeout(() =>{
       router.push('/login')
