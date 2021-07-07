@@ -23,10 +23,10 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use(res => {
-  const { code, data, msg} = res
-  if (code === 200) {
-    return data
-  } else if (code === 40001) {
+  const { data, msg} = res
+  if (data.code === 200) {
+    return data.data
+  } else if (data.code === 40001) {
     ElMessage.error(TOKEN_INVAID)
     setTimeout(() =>{
       router.push('/login')
@@ -43,14 +43,13 @@ function request(options) {
   if (options.method.toLowerCase() === 'get') {
       options.params = options.data;
   }
-  let isMock = config.mock;
   if (typeof options.mock != 'undefined') {
-      isMock = options.mock;
+      config.mock = options.mock
   }
   if (config.env === 'prod') {
       service.defaults.baseURL = config.baseApi
   } else {
-      service.defaults.baseURL = isMock ? config.mockApi : config.baseApi
+      service.defaults.baseURL = config.mock ? config.mockApi  : config.baseApi
   }
 
   return service(options)
