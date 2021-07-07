@@ -49,7 +49,7 @@
           if(valid) {
             this.$api.login(this.user).then(res => {
               console.log(res,'441515');
-              this.$store.commit('saveUserInfo',res)
+              this.$store.commit("saveUserInfo", res);
               this.$router.push('/welcome')
             })
           }
