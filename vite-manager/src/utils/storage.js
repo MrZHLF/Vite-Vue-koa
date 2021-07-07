@@ -10,7 +10,7 @@ export default {
     storage[key] = val;
     window.localStorage.setItem(config.namespace,JSON.stringify(storage))
   },
-  getIten(key) {
+  getItem(key) {
     return this.getStroage()[key]
   },
   getStroage(key) {
