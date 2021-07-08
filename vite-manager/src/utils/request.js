@@ -25,7 +25,6 @@ service.interceptors.request.use((req) => {
 
 // 响应拦截
 service.interceptors.response.use(res => {
-  console.log(res,'resres');
   const {code, data, msg} = res.data
   if (code === 200) {
     return data
@@ -46,27 +45,28 @@ function request(options) {
   if (options.method.toLowerCase() === 'get') {
       options.params = options.data;
   }
+  let isMock = config.mock
   if (typeof options.mock != 'undefined') {
-      config.mock = options.mock
+    isMock = options.mock
   }
   if (config.env === 'prod') {
       service.defaults.baseURL = config.baseApi
   } else {
-      service.defaults.baseURL = config.mock ? config.mockApi  : config.baseApi
+      service.defaults.baseURL = isMock ? config.mockApi  : config.baseApi
   }
 
   return service(options)
 }
 
-['get', 'post', 'put', 'delete', 'patch'].forEach((item) => {
-  request[item] = (url, data, options) => {
-      return request({
-          url,
-          data,
-          method: item,
-          ...options
-      })
-  }
-})
+// ['get', 'post', 'put', 'delete', 'patch'].forEach((item) => {
+//   request[item] = (url, data, options) => {
+//       return request({
+//           url,
+//           data,
+//           method: item,
+//           ...options
+//       })
+//   }
+// })
 
 export default request
