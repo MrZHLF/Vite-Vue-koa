@@ -19,12 +19,39 @@ export default {
       mock:true
     })
   },
-  getMenuList() {
+  getMenuList(params) {
     return request({
         url: '/menu/list',
         method: 'get',
-        data: {},
-        mock:true
+        data: params
+    })
+  },
+
+  // 创建菜单
+  menuSubmit(params) {
+    return request({
+        url: '/menu/operate',
+        method: 'post',
+        data: params
+    })
+  },
+  // 获取角色列表
+  getRoleList(params) {
+    return request({
+      url: '/roles/list',
+      method: 'get',
+      data: params,
+      mock: true
+    })
+  },
+
+  // 角色操作
+  roleOperate(params) {
+    return request({
+        url: '/roles/operate',
+        method: 'post',
+        data: params,
+        mock: true
     })
   },
 }

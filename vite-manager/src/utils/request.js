@@ -28,13 +28,12 @@ service.interceptors.response.use(res => {
   const {code, data, msg} = res.data
   if (code === 200) {
     return data
-  } else if (code === 50001) {
+  } else if (code === 500001) {
     ElMessage.error(TOKEN_INVAID)
-    setTimeout(() =>{
-      router.push('/login')
-    },1500)
+    router.push('/login')
     return Promise.reject(TOKEN_INVAID)
   } else {
+    console.log(res);
     ElMessage.error(msg || NETWORK_ERROR)
     return Promise.reject(msg || NETWORK_ERROR)
   }

@@ -88,8 +88,9 @@ import TreeMenu from './TreeMenu.vue'
         this.noticeCount = count
       },
       async getMenuList() {
-        const { menuList, actionList } = await this.$api.getMenuList()
-        this.userMenu = menuList
+        const list  = await this.$api.getMenuList()
+        console.log(list,'menuListmenuList');
+        this.userMenu = list
       }
     },
   }

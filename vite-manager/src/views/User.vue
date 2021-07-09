@@ -306,7 +306,7 @@ export default {
         if(valid) {
           //toRaw把响应式对象转换为普通对象
           let params = toRaw(userForm);
-          params.userEmail += "@imooc.com";
+          params.userEmail += "@qq.com";
           params.action = action.value;
           userSubmit(params).then(res=>{
             showModal.value = false;
