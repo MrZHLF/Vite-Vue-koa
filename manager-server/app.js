@@ -11,6 +11,7 @@ const koajwt = require('koa-jwt')
 const util = require('./utils/util')
 const users = require('./routes/users')
 const menus = require('./routes/menus')
+const role = require('./routes/role')
 // error handler
 onerror(app)
 
@@ -52,6 +53,7 @@ app.use(koajwt({ secret: 'imooc' }).unless({
 router.prefix("/api")
 router.use(users.routes(), users.allowedMethods())
 router.use(menus.routes(), menus.allowedMethods())
+router.use(role.routes(),role.allowedMethods())
 
 app.use(router.routes(), users.allowedMethods())
 

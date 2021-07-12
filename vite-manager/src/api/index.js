@@ -41,7 +41,7 @@ export default {
       url: '/roles/list',
       method: 'get',
       data: params,
-      mock: true
+      mock: false
     })
   },
 
@@ -51,7 +51,16 @@ export default {
         url: '/roles/operate',
         method: 'post',
         data: params,
-        mock: true
+        mock: false
+    })
+  },
+  // 角色权限设置
+  updatePermission(params) {
+    return request({
+        url: '/roles/update/permission',
+        method: 'post',
+        data: params,
+        mock: false
     })
   },
 }
@@ -78,7 +87,7 @@ export function getRoleAllList() {
   return request({
     url: '/roles/allList',
     method: 'get',
-    mock:true,
+    mock:false,
     data: {}
   })
 }

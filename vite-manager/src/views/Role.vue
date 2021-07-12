@@ -134,7 +134,16 @@ export default {
         {
           label: "权限列表",
           prop: "permissionList",
-          width: 200
+          width: 200,
+          formatter: (row, column, value) => {
+            let names = [];
+            let list = value.halfCheckedKeys || [];
+            list.map((key) => {
+              let name = this.actionMap[key];
+              if (key && name) names.push(name);
+            });
+            return names.join(",");
+          },
         },
         {
           label: "创建时间",
@@ -144,6 +153,7 @@ export default {
           },
         },
       ],
+      actionMap:{}, //菜单映射
       rules:{
         roleName: [{required: true,message: "请输入角色角色名称"}],
       }
@@ -158,9 +168,10 @@ export default {
     async getMenuList() {
       let list = await this.$api.getMenuList();
       this.menuList = list;
+      this.getActionMap(list)
     },
     async getRoleList() {
-      let {list,page} = await this.$api.getRoleList(this.queryForm)
+      let {list,page} = await this.$api.getRoleList({...this.queryForm,...this.pager})
       this.roleList = list
       this.pager.total = page.total
     },
@@ -182,7 +193,7 @@ export default {
       this.action = "edit"
       this.showModal = true
       this.$nextTick(() =>{
-        Object.assign(this.roleForm,row)
+        Object.assign({_id:row._id,roleName:row.roleName, remark: row.remark})
       })
     },
     // 新增
@@ -213,14 +224,56 @@ export default {
       })
     },
     handleOpenPermission(row) {
+      console.log(row,'rowrow');
       // 设置权限
       this.curRoleId = row._id
       this.curRoleName = row.roleName
       this.showPermission = true
+      let { checkedKeys } = row.permissionList
+      setTimeout(() => {
+        this.$refs.tree.setCurrentKey(checkedKeys)
+      })
     },
-    // // 权限提交
-    handlePermissionSubmit() {
-
+    //权限提交
+    async handlePermissionSubmit() {
+      let nodes = this.$refs.tree.getCheckedNodes();
+      let halfKeys = this.$refs.tree.getHalfCheckedKeys();
+      let checkedKeys = [];
+      let parentKeys = [];
+      nodes.map((node) => {
+        if (!node.children) {
+          checkedKeys.push(node._id);
+        } else {
+          parentKeys.push(node._id);
+        }
+      });
+      let params = {
+        _id: this.curRoleId,
+        permissionList: {
+          checkedKeys,
+          halfCheckedKeys: parentKeys.concat(halfKeys),
+        },
+      };
+      await this.$api.updatePermission(params);
+      this.showPermission = false;
+      this.$message.success("设置成功");
+      this.getRoleList();
+    },
+    getActionMap(list){
+      let actionMap = {}
+      const deep = (arr) => {
+        while (arr.length) {
+          let item = arr.pop()
+          if (item.children && item.action) {
+            actionMap[item._id] = item.menuName
+          }
+          if (item.children && !item.action) {
+            deep(item.children)
+          }
+        }
+      }
+      deep(JSON.parse(JSON.stringify(list)))
+      this.actionMap = actionMap
     }
   },
 }

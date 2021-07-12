@@ -1,3 +1,9 @@
+/*
+ * @Author: 小周 
+ * @Date: 2021-07-12 09:00:37 
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2021-07-12 09:50:23
+ */
 // 用户管理模块
 const router = require('koa-router')()
 const User = require('./../models/userSchema')
@@ -6,7 +12,6 @@ const jwt = require('jsonwebtoken')
 const Counter = require('./../models/counterSchema')
 const md5 = require('md5')
 router.prefix('/users')
-
 // 用户登录
 router.post('/login', async (ctx) => {
   try {
@@ -17,13 +22,13 @@ router.post('/login', async (ctx) => {
      */
     const res = await User.findOne({
       userName,
-      userPwd
+      userPwd:md5(userPwd)
     },'userId userName userEmail state role deptId roleList')
     if (res) {
       const data = res._doc;
       const token = jwt.sign({
         data
-      }, 'imooc', { expiresIn: '1h' })
+      }, 'imooc', { expiresIn: '2days' })   //2days 过期时间
       data.token = token
       ctx.body = util.success(data)
     } else {
