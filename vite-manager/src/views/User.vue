@@ -337,6 +337,7 @@ export default {
     // 获取角色列表
     const getRoleAllLists = () =>{
       getRoleAllList().then(res =>{
+        console.log(res,'resres');
         roleList.value = res
       })
     }

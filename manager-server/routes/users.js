@@ -2,7 +2,7 @@
  * @Author: 小周 
  * @Date: 2021-07-12 09:00:37 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-07-12 09:50:23
+ * @Last Modified time: 2021-07-13 17:31:03
  */
 // 用户管理模块
 const router = require('koa-router')()
@@ -64,6 +64,18 @@ router.get('/list', async (ctx) => {
     ctx.body = util.fail(`查询异常:${error.stack}`)
   }
 })
+
+// 获取所有用户列表
+router.get("/all/list",async(ctx) => {
+  try {
+    const list = await User.find({},'userId userName userEmail')
+    ctx.body = util.success(list)
+  } catch (error) {
+    ctx.body = util.fail(error.stack)
+  }
+})
+
+
 
 // 用户删除/批量删除
 router.post('/delete', async(ctx) => {

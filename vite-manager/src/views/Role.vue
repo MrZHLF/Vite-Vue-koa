@@ -224,15 +224,13 @@ export default {
       })
     },
     handleOpenPermission(row) {
-      console.log(row,'rowrow');
-      // 设置权限
-      this.curRoleId = row._id
-      this.curRoleName = row.roleName
-      this.showPermission = true
-      let { checkedKeys } = row.permissionList
+      this.curRoleId = row._id;
+      this.curRoleName = row.roleName;
+      this.showPermission = true;
+      let { checkedKeys } = row.permissionList;
       setTimeout(() => {
-        this.$refs.tree.setCurrentKey(checkedKeys)
-      })
+        this.$refs.tree.setCheckedKeys(checkedKeys);
+      });
     },
     //权限提交
     async handlePermissionSubmit() {

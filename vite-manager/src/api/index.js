@@ -63,6 +63,32 @@ export default {
         mock: false
     })
   },
+  // 获取部门列表
+  getDeptList(params) {
+    return request({
+      url: '/dept/list',
+      method: 'get',
+      mock:false,
+      data: params
+    })
+  },
+  // 部门添加删除
+  deptOperate(params) {
+    return request({
+      url: '/dept/operate',
+      method: 'post',
+      data: params,
+      mock: false
+    })
+  },
+  // 获取所有用户列表
+  getAllUserList() {
+    return request({
+      url: '/users/all/list',
+      method: 'get',
+      data: {}
+    })
+  },
 }
 
 // 获取用户列表
@@ -87,8 +113,7 @@ export function getRoleAllList() {
   return request({
     url: '/roles/allList',
     method: 'get',
-    mock:false,
-    data: {}
+    mock:false
   })
 }
 
@@ -96,8 +121,7 @@ export function getRoleAllList() {
 export function getDeptList() {
   return request({
     url: '/dept/list',
-    method: 'get',
-    mock:true
+    method: 'get'
   })
 }
 
