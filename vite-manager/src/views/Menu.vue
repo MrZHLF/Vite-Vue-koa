@@ -6,7 +6,7 @@
           <el-input v-model="queryForm.userId" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单状态" prop="menuState">
-          <el-select v-model="queryForm.menuState">
+          <el-select v-model="queryForm.menuState" placeholder="请选择菜单名称">
             <el-option :value="1" label="正常"></el-option>
             <el-option :value="2" label="停用"></el-option>
           </el-select>
@@ -19,7 +19,7 @@
     </div>
     <div class="base-table">
       <div class="action">
-        <el-button type="primary" @click="handleAdd(1)">新增</el-button>
+        <el-button type="primary" @click="handleAdd(1)" v-has="'menu-create'">新增</el-button>
       </div>
       <el-table :data="menuList" row-key="_id" :tree-props="{ children: 'children' }">
         <el-table-column 
@@ -33,8 +33,8 @@
         </el-table-column>
         <el-table-column label="操作" width="220">
           <template #default="scope">
-            <el-button size="mini" @click="handleAdd(2,scope.row)">新增</el-button>
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="mini" type="primary" @click="handleAdd(2,scope.row)" v-has="'menu-create'">新增</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)" >编辑</el-button>
             <el-button
               type="danger"
               size="mini"
@@ -239,6 +239,7 @@ export default {
       this.getMenuList()
     },
     // 提交表单
+    
     handleSubmit() {
       this.$refs.dialogForm.validate(async (valid) =>{
         if(valid) {

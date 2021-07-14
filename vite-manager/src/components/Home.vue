@@ -78,7 +78,10 @@ import TreeMenu from './TreeMenu.vue'
     },
     methods: {
       handleLogout(key) {
-        if (key=='email') return
+        if (key == "email") return;
+        this.$store.commit("saveUserInfo", "");
+        this.userInfo = {};
+        this.$router.push("/login");
       },
       toggle() {
         this.isCollapse = !this.isCollapse;
@@ -88,9 +91,10 @@ import TreeMenu from './TreeMenu.vue'
         this.noticeCount = count
       },
       async getMenuList() {
-        const list  = await this.$api.getMenuList()
-        console.log(list,'menuListmenuList');
-        this.userMenu = list
+        const {menuList,actionList}  = await this.$api.getPermissionList()
+        this.$store.commit("saveUserMenu",menuList)
+        this.$store.commit("saveUserAction",actionList)
+        this.userMenu = menuList
       }
     },
   }

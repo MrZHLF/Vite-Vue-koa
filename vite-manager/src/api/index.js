@@ -26,7 +26,14 @@ export default {
         data: params
     })
   },
-
+  getPermissionList() {
+    return request({
+        url: '/users/getPermissionList',
+        method: 'get',
+        data: {},
+        mock: false
+    })
+  },
   // 创建菜单
   menuSubmit(params) {
     return request({
