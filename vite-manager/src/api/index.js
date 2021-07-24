@@ -148,7 +148,7 @@ export function getApplyList(params) {
     url: '/leave/list',
     method: 'get',
     data: params,
-    mock: true
+    mock: false
   })
 }
 
@@ -159,6 +159,6 @@ export function leaveOperate(params) {
     url: '/leave/operate',
     method: 'post',
     data: params,
-    mock: true
+    mock: false
   })
 }
