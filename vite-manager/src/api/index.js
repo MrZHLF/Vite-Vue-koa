@@ -140,3 +140,25 @@ export function userSubmit(params) {
     data: params
   })
 }
+
+
+// 休假申请
+export function getApplyList(params) {
+  return request({
+    url: '/leave/list',
+    method: 'get',
+    data: params,
+    mock: true
+  })
+}
+
+
+// 新增申请
+export function leaveOperate(params) {
+  return request({
+    url: '/leave/operate',
+    method: 'post',
+    data: params,
+    mock: true
+  })
+}
