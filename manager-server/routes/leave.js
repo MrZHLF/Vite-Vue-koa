@@ -10,15 +10,28 @@ router.prefix('/leave')
 
 // 查询申请列表
 router.get("/list",async(ctx) => {
-  const { applyState } = ctx.request.query
+  const { applyState,type } = ctx.request.query
   const { page,skipIndex } = util.pager(ctx.request.query)
   let authorization = ctx.request.headers.authorization
   let { data } = util.decoded(authorization)
 
   try {
-    let params = {
-      "applyUser.userId":data.userId
+    let params = {}
+    if (type == "approve") {
+      if (applyState == 1 || applyState == 2) {
+        params.curAuditUserName = data.userName;
+        params.$or = [{ applyState: 1 }, { applyState: 2 }]
+      } else if (applyState > 2) {
+        params = { "auditFlows.userId": data.userId, applyState }
+      } else {
+        params = { "auditFlows.userId": data.userId }
+      }
+    } else {
+      params = {
+        "applyUser.userId":data.userId
+      }
     }
+    
     if (applyState) params.applyState = applyState
     const query = Leave.find(params)
     const list = await query.skip(skipIndex).limit(page.pageSize)
@@ -34,6 +47,22 @@ router.get("/list",async(ctx) => {
     
   }
 })
+
+// 通知数量
+router.get("/count", async(ctx) => {
+  let authorization = ctx.request.headers.authorization;
+  let { data } = util.decoded(authorization);
+  try {
+    let params = {}
+    params.curAuditUserName = data.userName;
+    params.$or = [{ applyState: 1 }, { applyState: 2 }]
+    const total = await Leave.countDocuments(params)
+    ctx.body = util.success(total)
+  } catch (error) {
+    ctx.body = util.fail(`查询异常：${error.message}`)
+  }
+})
+
 
 // 创建休假
 router.post("/operate", async (ctx) => {
@@ -83,6 +112,45 @@ router.post("/operate", async (ctx) => {
     ctx.body = util.success('', "操作成功")
   }
 
+})
+
+// 休假审核
+router.post("/approve",async(ctx) =>{
+  const {action, remark,_id } = ctx.request.body
+  let authorization = ctx.request.headers.authorization;
+  let { data } = util.decoded(authorization);
+  let params = {}
+
+  try {
+    let doc = await Leave.findById(_id)
+    let auditLogs = doc.auditLogs || [] 
+    if (action == "refuse") {
+      params.applyState = 3
+    } else {
+      // 审核通过
+      if (doc.auditFlows.length == doc.auditLogs.length) {
+        ctx.body = util.success("当前申请单已处理，请勿重复提交")
+        return
+      } else if (doc.auditFlows.length == doc.auditLogs.length + 1) {
+        params.applyState = 4
+      } else if (doc.auditFlows.length > doc.auditLogs.length) {
+        params.applyState = 2
+        params.curAuditUserName = doc.auditFlows[doc.auditLogs.length + 1].userName
+      }
+    }
+    auditLogs.push({
+      userId: data.userId,
+      userName: data.userName,
+      createTime: new Date(),
+      remark,
+      action: action == 'refuse' ? "审核拒绝" : "审核通过"
+    })
+    params.auditLogs = auditLogs;
+    let res = await Leave.findByIdAndUpdate(_id, params);
+    ctx.body = util.success("", "处理成功");
+  } catch (error) {
+    ctx.body = util.fail(`查询异常：${error.message}`)
+  }
 })
 
 module.exports = router;

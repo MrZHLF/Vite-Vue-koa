@@ -16,7 +16,7 @@ export default {
       url: '/leave/count',
       method: 'get',
       data: {},
-      mock:true
+      mock:false
     })
   },
   getMenuList(params) {
@@ -157,6 +157,16 @@ export function getApplyList(params) {
 export function leaveOperate(params) {
   return request({
     url: '/leave/operate',
+    method: 'post',
+    data: params,
+    mock: false
+  })
+}
+
+// 新增申请
+export function leaveApprove(params) {
+  return request({
+    url: '/leave/approve',
     method: 'post',
     data: params,
     mock: false

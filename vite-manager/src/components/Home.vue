@@ -28,7 +28,7 @@
           </div>
         </div>
         <div class="user-info">
-          <el-badge :is-dot="noticeCount" class="notice" type="danger">
+          <el-badge :is-dot="noticeCount" class="notice" type="danger" @click="$router.push('/audit/approve')">
             <i class="el-icon-bell"></i>
           </el-badge>
           <el-dropdown @command="handleLogout">
@@ -72,6 +72,11 @@ import TreeMenu from './TreeMenu.vue'
         activeMenu: location.hash.slice(1),
       }
     },
+    computed: {
+      noticeCount() {
+        return this.$store.state.noticeCount
+      }
+    },
     mounted() {
       this.getNoticeCount()
       this.getMenuList()
@@ -88,7 +93,8 @@ import TreeMenu from './TreeMenu.vue'
       },
       async getNoticeCount() {
         const count = await this.$api.noticeCount()
-        this.noticeCount = count
+        // this.noticeCount = count
+        this.$store.commit("saveNoticeCount",count)
       },
       async getMenuList() {
         const {menuList,actionList}  = await this.$api.getPermissionList()
@@ -165,6 +171,7 @@ import TreeMenu from './TreeMenu.vue'
         .notice {
           line-height: 30px;
           margin-right: 15px;
+          cursor: pointer;
         }
         .user-link {
           cursor: pointer;

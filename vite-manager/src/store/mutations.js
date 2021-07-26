@@ -13,4 +13,8 @@ export default {
     state.actionList = actionList;
     storage.setItem('actionList', actionList)
   },
+  saveNoticeCount(state, noticeCount) {
+    state.noticeCount = noticeCount;
+    storage.setItem('noticeCount', noticeCount)
+  },
 }
